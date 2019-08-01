@@ -83,7 +83,7 @@ class SendMoneyReview extends Component {
         }
         catch (e) {
             this.setState({isProgressModalVisible: false});
-            console.log(e);
+            alert(e.message);
         }
 
     };

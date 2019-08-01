@@ -80,7 +80,8 @@ export default class PasswordChange extends Component {
             }
             this.props.navigation.navigate("Login");
         }
-        catch(e){console.log(e)}
+        catch(e){this.setState({isProgressModalVisible: false});
+            alert(e.message);}
     };
 
     setDetails = (key, value) => {

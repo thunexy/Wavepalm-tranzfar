@@ -66,7 +66,8 @@ class AddSendMoneyEuropeRecipient extends Component {
                 this.props.navigation.navigate("SendMoneyEstimate");
             }
             catch (error) {
-                console.log(error);
+                this.setState({isProgressModalVisible: false});
+                alert(error.message);
             }
         }
         else {

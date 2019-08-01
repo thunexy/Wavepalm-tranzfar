@@ -78,7 +78,8 @@ class AirtimePayment extends Component {
             });
         }
         catch (e) {
-            console.log(e);
+            this.setState({isProgressModalVisible: false});
+            alert(e.message);
         }
 
     };

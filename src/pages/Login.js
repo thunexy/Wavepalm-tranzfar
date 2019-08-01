@@ -88,7 +88,8 @@ class Login extends Component {
 
         }
         catch(error){
-            console.log(error);
+            this.setState({isProgressModalVisible: false});
+            alert(error.message);
         }
     };
     setDetails = (key, value) => {

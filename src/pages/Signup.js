@@ -127,7 +127,8 @@ class Signup extends Component {
                 }
             })
         } catch (error) {
-            console.error(error);
+            this.setState({isProgressModalVisible: false});
+            alert(error.message);
         }
     };
 

@@ -15,6 +15,7 @@ import { COLOR } from "./../Colors/Colors";
 import Card from "./../components/common/Card";
 import PaymentModal from "../components/common/PaymentModal";
 import ProgressModal from "../components/common/ProgressModal";
+import {airtimePaymentUrl} from "../components/Urls/Urls";
 
 const { width, height } = Dimensions.get("window");
 const formatAccNum = num => {
@@ -100,7 +101,7 @@ class CardList extends Component {
           showModal: false
         });
         const response = await fetch(
-          "https://ravesandboxapi.flutterwave.com/v2/services/confluence",
+          airtimePaymentUrl,
           {
             method: "POST",
             headers: {

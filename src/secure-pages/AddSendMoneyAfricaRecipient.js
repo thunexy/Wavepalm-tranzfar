@@ -20,6 +20,7 @@ import ProgressModal from "../components/common/ProgressModal";
 import {connect} from "react-redux";
 import {checkUserDetails} from "../store/actions/auth";
 import {fetchBankList, saveRecipientUrl} from "../components/Urls/Urls";
+import {timeout} from "../components/common/Timeout";
 
 const {width, height} = Dimensions.get("window");
 
@@ -58,6 +59,7 @@ class AddSendMoneyAfricaRecipient extends Component {
     fetchBanks = async () => {
         try {
             this.setState({modalText: "Fetching the list of banks...", isProgressModalVisible: true});
+            //timeout.start("Network error! Please, try again", timeout.slow);
             const response = await fetch(`${fetchBankList}?country=${this.state.country}&short=${this.props.navigation.getParam("state").selectedCountry.short}`);
             const responseJson = await response.json();
             this.setState({isProgressModalVisible: false});
@@ -77,7 +79,8 @@ class AddSendMoneyAfricaRecipient extends Component {
             });
         }
         catch (error) {
-            console.log(error);
+            this.setState({isProgressModalVisible: false});
+            alert(error.message);
         }
     };
 
@@ -91,10 +94,11 @@ class AddSendMoneyAfricaRecipient extends Component {
 
     saveRecipient = async () => {
 
-        if (this.state.country && this.state.accountNumber && this.state.bank && this.state.fullName && this.state.recipientEmail) {
+        if (this.state.country && this.state.accountNumber && this.state.selectedBank && this.state.fullName && this.state.recipientEmail) {
             try {
                 this.setState({modalText: "Saving recipient...", isProgressModalVisible: true});
-                const response = await fetch(`${saveRecipientUrl}?type=a&owneremail=${this.props.email}&recipientemail=${this.state.recipientEmail}&accno=${this.state.accountNumber}&bank=${this.state.bank}&name=${this.state.fullName}&country=${this.state.country}`);
+                //timeout.start("Network error! Please, try again", timeout.slow);
+                const response = await fetch(`${saveRecipientUrl}?type=a&owneremail=${this.props.email}&recipientemail=${this.state.recipientEmail}&accno=${this.state.accountNumber}&bank=${this.state.selectedBank.label}&name=${this.state.fullName}&country=${this.state.country}`);
                 const responseJson = await response.json();
                 this.setState({isProgressModalVisible: false});
                 alert(responseJson.message);
@@ -104,7 +108,8 @@ class AddSendMoneyAfricaRecipient extends Component {
                 this.props.navigation.navigate("SendMoneyEstimate");
             }
             catch (error) {
-                console.log(error);
+                this.setState({isProgressModalVisible: false});
+                alert(error.message);
             }
         }
         else {

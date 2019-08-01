@@ -213,7 +213,7 @@ class SendMoneyEstimate extends Component {
                             <Text style={{width: "50%", fontSize: 15}}>Total Cost</Text>
                             <TextInput style={{color: "#000", textAlign: "right", width: "50%", fontWeight: "bold"}}
                                        editable={false}
-                                       value={(this.state.selectedCountry.symbol) ? `${this.state.selectedCountry.symbol} ${(!this.state.includeTransferFee) ? this.state.sendAmount || 0 : this.state.totalAmount || 0}` : "N/A"}/>
+                                       value={(this.state.baseCurrency) ? `${this.state.baseCurrency} ${(!this.state.includeTransferFee) ? this.state.sendAmount || 0 : this.state.totalAmount || 0}` : "N/A"}/>
                         </View>
                         <TouchableOpacity
                             style={[styles.buttonContainer, !this.state.isCountrySelected && {backgroundColor: COLOR.InputGreyBorderColor}]}

@@ -8,3 +8,4 @@ export const recoveryUrl = `${rootUrl}/send-recovery-email.php`;
 export const saveRecipientUrl = `${rootUrl}/save-recipient.php`;
 export const passwordChangeUrl = `${rootUrl}/change-password.php`;
 export const fetchBankList = `${rootUrl}/flutterwave/get-bank-list.php`;
+export const airtimePaymentUrl = `https://ravesandboxapi.flutterwave.com/v2/services/confluence`;

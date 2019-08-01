@@ -51,7 +51,8 @@ class PasswordRecovery extends Component {
             this.props.navigation.navigate("PasswordChange");
         }
         catch (e) {
-            console.log(e);
+            this.setState({isProgressModalVisible: false});
+            alert(e.message);
         }
 
     };
