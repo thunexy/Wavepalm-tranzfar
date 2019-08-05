@@ -4,6 +4,7 @@ const initialState = {
     isLoggedIn: false,
     email: "",
     country: "",
+    others: "",
 };
 
 const reducer = (state = initialState, action) => {
@@ -13,7 +14,8 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 isLoggedIn: action.isLoggedIn,
                 email: action.email,
-                country: action.country
+                country: action.country,
+                others: action.others,
             };
         case USER_CHECK:
             return{

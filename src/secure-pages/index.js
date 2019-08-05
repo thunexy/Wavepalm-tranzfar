@@ -1,6 +1,8 @@
 import AddSendMoneyAfricaRecipient from "./AddSendMoneyAfricaRecipient";
+import ChargeCard from "./ChargeCard";
 
 export AddCard from "./AddCard";
+export ChargeCard from "./ChargeCard";
 export CardList from "./CardList";
 
 export ReceiveMoneyReview from "./ReceiveMoneyReview";

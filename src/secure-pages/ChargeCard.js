@@ -16,12 +16,14 @@ import Header from "./../components/common/header";
 import {COLOR} from "./../Colors/Colors";
 import {CheckBox} from "react-native-elements";
 import PaymentModal from "../components/common/PaymentModal";
-import {processingPayment} from "../components/Strings/Strings";
+import {addingCard, processingPayment, validatingCard} from "../components/Strings/Strings";
 import ProgressModal from "../components/common/ProgressModal";
+import {addCard} from "../components/Urls/Urls";
+import {validateCard} from "../components/checkout/ValidateCard";
 
 const {width, height} = Dimensions.get("window");
 
-class AddCard extends Component {
+class ChargeCard extends Component {
     static navigationOptions = ({navigation}) => {
         return {
             headerTitle: (
@@ -59,7 +61,8 @@ class AddCard extends Component {
     state = {
         cardNumber: "",
         cardName: "",
-        expiry: "",
+        month: "",
+        year: "",
         cvv: "",
         saveCard: false,
         showModal: false,
@@ -77,18 +80,36 @@ class AddCard extends Component {
     };
 
     registerCard = () => {
-        const {cardName, cardNumber, saveCard, cvv} = this.state;
-        if (saveCard) {
-            //save the card
-        } else {
-            // process transcation
-            this.setState(state => {
-                return {
-                    ...state,
-                    showModal: true
-                };
-            });
-        }
+        const {cardName, cardNumber, saveCard, cvv, month, year} = this.state;
+        this.setState({isProgressModalVisible: true, modalText: validatingCard});
+        validateCard(cardNumber, cardName, month, year, cvv, async (status) => {//validate card
+            if (status) {//successful validation
+                if(saveCard){//user wants to save card
+                    this.setState({modalText: addingCard});
+                    try{
+                        const response = await fetch(`${addCard}?userEmail=${this.props.userEmail}&cardNumber=${cardNumber}&cardName=${cardName}&month=${month}&year=${year}`);
+                        const responseJson = await response.json();
+                        this.setState({isProgressModalVisible: false});
+                        alert(responseJson.message);
+                        if(!responseJson.bool){
+                            return;
+                        }
+                        this.props.navigation.replace("History");
+                    }
+                    catch (e) {
+                        this.setState({isProgressModalVisible: false});
+                        alert(e.message);
+                    }
+
+
+                }
+                //continue to process transaction for now do the top
+            }
+            else {
+                this.setState({isProgressModalVisible: false});
+                alert("This card could not be validated!");
+            }
+        });
         // then continue transaction
     };
 
@@ -98,7 +119,8 @@ class AddCard extends Component {
         return (
             <View
                 style={{
-                    flex: 1
+                    flex: 1,
+                    backgroundColor: "#f5f5f5",
                 }}
             >
                 <ProgressModal isVisible={this.state.isProgressModalVisible} text={this.state.modalText}/>
@@ -134,13 +156,12 @@ class AddCard extends Component {
                                 Card Number *
                             </Text>
                             <TextInput
-                                keyboardType="phone-pad"
+                                keyboardType={"numeric"}
                                 maxLength={16}
                                 value={this.state.cardNumber}
                                 onChangeText={this.setDetails.bind(this, "cardNumber")}
                                 style={[styles.inputField]}
-                                editable={false}
-                                placeholder="4545 4545 4545 4545"
+                                placeholder="0000 0000 0000 0000"
                             />
                         </View>
 
@@ -150,10 +171,10 @@ class AddCard extends Component {
                             </Text>
                             <TextInput
                                 keyboardType="name-phone-pad"
-                                value={"John Doe"}
-                                editable={false}
+                                value={this.state.cardName}
                                 onChangeText={this.setDetails.bind(this, "cardName")}
                                 style={[styles.inputField]}
+                                placeholder={"e.g John Doe"}
                             />
                         </View>
 
@@ -166,19 +187,17 @@ class AddCard extends Component {
                                     <TextInput
                                         keyboardType="phone-pad"
                                         maxLength={2}
-                                        value={"12"}
-                                        editable={false}
-                                        onChangeText={this.setDetails.bind(this, "cardName")}
+                                        value={this.state.month}
+                                        onChangeText={this.setDetails.bind(this, "month")}
                                         style={[styles.inputField, {width: "100%"}]}
                                         placeholder="MM"
                                     />
-                                    <Text style={{fontSize: 25}}> / </Text>
+                                    <Text style={{fontSize: 25, alignSelf: "center"}}> / </Text>
                                     <TextInput
                                         keyboardType="phone-pad"
                                         maxLength={2}
-                                        value={"21"}
-                                        editable={false}
-                                        onChangeText={this.setDetails.bind(this, "cardName")}
+                                        value={this.state.year}
+                                        onChangeText={this.setDetails.bind(this, "year")}
                                         style={[styles.inputField, {width: "100%"}]}
                                         placeholder="YY"
                                     />
@@ -191,10 +210,9 @@ class AddCard extends Component {
                                 </Text>
                                 <TextInput
                                     keyboardType="phone-pad"
-                                    // maxLength={11}
-                                    value={"454"}
-                                    editable={false}
-                                    onChangeText={this.setDetails.bind(this, "phone")}
+                                    maxLength={3}
+                                    value={this.state.cvv}
+                                    onChangeText={this.setDetails.bind(this, "cvv")}
                                     style={[styles.inputField, {width: "100%"}]}
                                     placeholder="CVV"
                                 />
@@ -252,22 +270,19 @@ class AddCard extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        height: height - 150,
         backgroundColor: "#f5f5f5",
         alignItems: "center"
     },
     footer: {
-        backgroundColor: "#fff",
-        position: "absolute",
-        top: height - 130,
-        right: 0,
-        left: 0
+        marginTop: 90,
     },
     inputField: {
         textAlign: "center",
         height: 42,
-        backgroundColor: "#e5e5e5",
+        backgroundColor: "#fff",
         borderRadius: 5,
+        borderWidth: 1,
+        borderColor: "#e5e5e5",
         fontSize: 16
     },
     textContainer: {
@@ -299,4 +314,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AddCard;
+export default ChargeCard;

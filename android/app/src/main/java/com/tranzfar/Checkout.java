@@ -32,7 +32,7 @@ public class Checkout extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void show(Callback successCallback) {
+    public void generateToken(String cardNumber, String cardName, String month, String year, String cvv, Callback successCallback, Callback errorCallback) {
 
 
         mCheckoutAPIClient = new CheckoutAPIClient(
@@ -49,12 +49,13 @@ public class Checkout extends ReactContextBaseJavaModule {
 
                 @Override
                 public void onError(CardTokenisationFail error) {
-                    successCallback.invoke(error.getEventId());
+                    errorCallback.invoke(error.getMessage());
                 }
 
                 @Override
                 public void onNetworkError(VolleyError error) {
                     // your network error
+                    errorCallback.invoke(error.getMessage());
                 }
             }
 
@@ -64,11 +65,11 @@ public class Checkout extends ReactContextBaseJavaModule {
         // Pass the paylod and generate the token
         mCheckoutAPIClient.generateToken(
             new CardTokenisationRequest(
-                "4242424242424242",
-                "name",
-                "06",
-                "25",
-                "100",
+                cardNumber,
+                cardName,
+                month,
+                year,
+                cvv,
                 new BillingModel(
                     "address line 1",
                     "address line 2",

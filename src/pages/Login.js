@@ -82,7 +82,7 @@ class Login extends Component {
                 this.props.navigation.navigate("Verification");
                 return;
             }
-                this.props.onLogIn(true, this.state.email, responseJson.data.country);
+                this.props.onLogIn(true, this.state.email, responseJson.data.country, responseJson.data);
                 this.props.navigation.navigate("Dashboard");
 
 
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogIn: (statusBool, email, country) => dispatch(isLoggedIn(statusBool, email, country)),
+        onLogIn: (statusBool, email, country, others) => dispatch(isLoggedIn(statusBool, email, country, others)),
     }
 };
 

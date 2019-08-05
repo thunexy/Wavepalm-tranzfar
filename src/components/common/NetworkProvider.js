@@ -57,9 +57,11 @@ const NetworkProvider = ({ title, logo, focus }) => {
 const styles = StyleSheet.create({
   container: {
     minWidth: 80,
-    backgroundColor: "#e1e1e1",
+    backgroundColor: "#fff",
     padding: 10,
     marginRight: 8,
+      borderWidth: 1,
+      borderColor: "#e5e5e5",
     borderRadius: 3,
     alignItems: "center",
     justifyContent: "center"

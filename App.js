@@ -28,15 +28,13 @@ import {
     EnrollPasscode,
     AddSendMoneyAfricaRecipient,
     AddSendMoneyEuropeRecipient,
-    AddReceiveMoneyRecipient,
     CardList,
-    AddCard
+    AddCard, ChargeCard
 } from "./src/secure-pages";
 import SendMoneyReview from "./src/secure-pages/SendMoneyReview";
 import ReceiveMoneyReview from "./src/secure-pages/ReceiveMoneyReview";
 import Splash from "./src/pages/Splash";
 import {connect} from "react-redux";
-import {isLoggedIn} from "./src/store/actions";
 
 class App extends Component {
     render() {
@@ -81,14 +79,14 @@ const DrawerStackUser = createDrawerNavigator(
                 SendMoneyReview,
                 AddSendMoneyAfricaRecipient,
                 AddSendMoneyEuropeRecipient,
-                AddCard, Dashboard
+                AddCard, Dashboard, CardList, ChargeCard, History
             })
         },
         ReceiveMoney: {
             screen: createStackNavigator({
                 ReceiveMoneyEstimate: ReceiveMoneyEstimate,
                 ReceiveMoneyReview,
-                AddCard, Dashboard
+                AddCard, Dashboard, CardList, History
             })
         },
         LogOut: Home

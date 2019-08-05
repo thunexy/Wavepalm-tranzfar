@@ -23,10 +23,10 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         padding: 20,
         justifyContent:"space-between",
-        marginHorizontal: 10,
-        backgroundColor: "#f5f5f5",
-        marginTop: 10,
-        borderRadius: 7
+        backgroundColor: "#fff",
+        borderColor: "#e5e5e5",
+        borderWidth: 1,
+        borderRadius: 5
     },
     name: {
         fontWeight: "bold"

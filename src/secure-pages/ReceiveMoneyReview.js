@@ -58,6 +58,8 @@ class ReceiveMoneyReview extends Component {
         sendCurrency: this.props.navigation.getParam("state").sendCurrency,
         recipients: [{name: "Select Recipient"}],
         selectedRecipient: {},
+        isProgressModalVisible: false,
+        modalText: "",
         countries: [{code: 0, country: "Select Receiver Country"}, {
             code: 1,
             short: "GBP",
@@ -121,7 +123,7 @@ class ReceiveMoneyReview extends Component {
 
                 <ScrollView>
                     <View style={styles.container}>
-                        <Header icon="md-calculator" backButtonAction={"ReceiveMoneyEstimate"}
+                        <Header icon="ios-undo" backButtonAction={"ReceiveMoneyEstimate"}
                                 navigation={this.props.navigation} replace={false} headerText="Receive Money"
                                 riderText="Enter an amount in either field."/>
 
@@ -181,7 +183,7 @@ class ReceiveMoneyReview extends Component {
                                 width: "50%",
                                 textAlign: "right",
                                 fontSize: 16
-                            }}>{navigation.getParam("state").receiveCurrency} {navigation.getParam("state").totalAmount}</Text>
+                            }}>{navigation.getParam("state").sendCurrency} {navigation.getParam("state").totalAmount}</Text>
                         </View>
 
 
@@ -239,7 +241,14 @@ class ReceiveMoneyReview extends Component {
 
                         <TouchableOpacity style={styles.buttonContainer}
                                           onPress={() => {
-                                              navigation.navigate("AddCard");
+                                              let paymentInfo = {
+                                                  amount: navigation.state.params.totalAmount,
+                                                  transactionType: "RECEIVE_MONEY",
+                                                  prevPage: "ReceiveMoneyEstimate",
+                                              };
+                                              navigation.navigate("CardList", {
+                                                  details: paymentInfo
+                                              });
                                           }}>
                             <Text style={styles.buttonText}>Pay Via Card</Text>
                         </TouchableOpacity>

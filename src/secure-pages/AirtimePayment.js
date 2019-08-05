@@ -64,12 +64,12 @@ class AirtimePayment extends Component {
 
     processPayment = async () => {
 
-        try{
-            this.setState({isProgressModalVisible: true, modalText: "Verifying Password..."})
+        try {
+            this.setState({isProgressModalVisible: true, modalText: "Verifying Password..."});
             const response = await fetch(`${logUserIn}?email=${this.props.userEmail}&password=${this.state.password}`);
             const responseJson = await response.json();
             this.setState({isProgressModalVisible: false});
-            if(!responseJson.bool){
+            if (!responseJson.bool) {
                 alert(responseJson.message);
                 return;
             }
@@ -90,34 +90,36 @@ class AirtimePayment extends Component {
             <View style={styles.container}>
                 <ProgressModal isVisible={this.state.isProgressModalVisible} text={this.state.modalText}/>
                 <Header
-                    icon="md-lock"
+                    icon="md-call"
                     backButtonAction={"Buyairtime"}
                     navigation={this.props.navigation}
                     headerText="Payment Summary"
                 />
-                <View style={{width: "100%", paddingVertical: 10}}>
-                    <Text
-                        style={{
-                            color: "#49add3",
-                            paddingVertical: 5,
-                            paddingHorizontal: 10
-                        }}
-                    >
-                        Airtime Top-up
-                    </Text>
-                    <TransactionCard
-                        name={details.selectedNetwork}
-                        subname={details.phoneNumber}
-                        amount={details.airtimeAmount}
-                    />
+                <View style={{padding: 16, width: "100%"}}>
+                    <View style={{width: "100%", paddingVertical: 10}}>
+                        <Text
+                            style={{
+                                color: "#49add3",
+                                paddingVertical: 5,
+                                paddingHorizontal: 10
+                            }}
+                        >
+                            Airtime Top-up
+                        </Text>
+                        <TransactionCard
+                            name={details.selectedNetwork}
+                            subname={details.phoneNumber}
+                            amount={details.airtimeAmount}
+                        />
+                    </View>
+                    <View style={{width: "100%"}}>
+                        <Text style={{color: COLOR.AppBlueColor}}>
+                            Tranzfar Password
+                        </Text>
+                        <TextInput secureTextEntry={true} style={styles.inputField} onChangeText={this.setPassword}
+                                   value={this.state.password} placeholder="******"/>
+                    </View>
                 </View>
-                <View style={{width: "100%"}}>
-                    <Text style={{color: COLOR.AppBlueColor, marginLeft: 10}}>
-                        Tranzfar Password
-                    </Text>
-                    <TextInput secureTextEntry={true} style={styles.inputField} onChangeText={this.setPassword} value={this.state.password} placeholder="******"/>
-                </View>
-
                 <TouchableOpacity
                     style={styles.buttonContainer}
                     onPress={() => this.processPayment()}
@@ -136,21 +138,22 @@ class AirtimePayment extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#f5f5f5",
         alignItems: "center",
         justifyContent: "flex-start"
     },
     footer: {
-        position: "absolute",
-        top: height - 100
+        marginTop: 50
     },
     inputField: {
         width: "100%",
-        height: 42,
-        borderBottomColor: COLOR.InputGreyBorderColor,
-        borderBottomWidth: 2,
-        paddingLeft: 10,
-        paddingRight: 24,
+        borderColor: "#e5e5e5",
+        justifyContent: "center",
+        backgroundColor: "#fff",
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
         fontSize: 16
     },
 

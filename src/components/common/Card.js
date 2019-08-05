@@ -15,8 +15,7 @@ const Card = props => {
     <TouchableOpacity
       onPress={props.onPress}
       style={{
-        marginTop: 7,
-        width: "90%"
+        marginTop: 16,
       }}
     >
       <View
@@ -30,10 +29,10 @@ const Card = props => {
         }}
       >
         <View style={{marginVertical: 10}}>
-          <Text style={styles.textWhite}>Bank: {props.bankName}</Text>
+          <Text style={styles.textWhite}>Country: {props.country}</Text>
         </View>
         <View>
-          <Text style={styles.textWhite}>{props.accountNumber}</Text>
+          <Text style={styles.textWhite}>{props.cardNumber}</Text>
         </View>
 
         <View
@@ -58,12 +57,12 @@ const Card = props => {
               <TouchableOpacity style={styles.radioCircle}>
                 <View style={styles.radioCheckedCircle} />
               </TouchableOpacity>
-              <Text style={styles.textWhite}>Active</Text>
+              <Text style={styles.textWhite}>Default</Text>
             </View>
           </View>
         </View>
         <View style={{ paddingVertical: 5 }}>
-          <Text style={styles.textWhite}>{props.accountName}</Text>
+          <Text style={styles.textWhite}>{props.cardName}</Text>
         </View>
       </View>
     </TouchableOpacity>

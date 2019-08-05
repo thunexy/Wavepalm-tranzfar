@@ -10,14 +10,17 @@ import {
     TextInput,
     NativeModules
 } from "react-native";
+import {connect} from "react-redux";
 import Icon from "react-native-vector-icons/Ionicons";
 import Footer from "./../components/common/footer";
 import Header from "./../components/common/header";
 import {COLOR} from "./../Colors/Colors";
 import {CheckBox} from "react-native-elements";
 import PaymentModal from "../components/common/PaymentModal";
-import {processingPayment} from "../components/Strings/Strings";
+import {addingCard, processingPayment, validatingCard} from "../components/Strings/Strings";
 import ProgressModal from "../components/common/ProgressModal";
+import {addCard} from "../components/Urls/Urls";
+import {validateCard} from "../components/checkout/ValidateCard";
 
 const {width, height} = Dimensions.get("window");
 
@@ -26,7 +29,7 @@ class AddCard extends Component {
         return {
             headerTitle: (
                 <View
-                    style={{flex: 1, flexDirection: "row", justifyContent: "center"}}
+                    style={{flex: 1, flexDirection: "row", justifyContent: "center", backgroundColor: "#f5f5f5"}}
                 >
                     <Image
                         style={{width: 200}}
@@ -59,9 +62,9 @@ class AddCard extends Component {
     state = {
         cardNumber: "",
         cardName: "",
-        expiry: "",
+        month: "",
+        year: "",
         cvv: "",
-        saveCard: false,
         showModal: false,
         isProgressModalVisible: false,
         modalText: processingPayment
@@ -77,18 +80,46 @@ class AddCard extends Component {
     };
 
     registerCard = () => {
-        const {cardName, cardNumber, saveCard, cvv} = this.state;
-        if (saveCard) {
-            //save the card
-        } else {
-            // process transcation
-            this.setState(state => {
-                return {
-                    ...state,
-                    showModal: true
-                };
+        const {cardName, cardNumber, month, year, cvv} = this.state;
+        try {
+            this.setState({isProgressModalVisible: true, modalText: validatingCard});
+            validateCard(cardNumber, cardName, month, year, cvv, async (status) => {
+
+                if (status) {
+                    this.setState({modalText: addingCard});
+                    const response = await fetch(`${addCard}?userEmail=${this.props.userEmail}&cardNumber=${cardNumber}&cardName=${cardName}&month=${month}&year=${year}`);
+                    const responseJson = await response.json();
+                    this.setState({isProgressModalVisible: false});
+                    alert(responseJson.message);
+                    if (!responseJson.bool) {
+                        return;
+                    }
+                    this.props.navigation.navigate("CardList", {
+                        details: this.props.navigation.state.params.details
+                    });
+                }
+                else {
+                    this.setState({isProgressModalVisible: false});
+                    alert("This card could not be validated!");
+                }
             });
+
         }
+        catch (e) {
+            this.setState({isProgressModalVisible: false});
+            alert(e.message);
+        }
+
+
+        // else {
+        //     // process transcation
+        //     this.setState(state => {
+        //         return {
+        //             ...state,
+        //             showModal: true
+        //         };
+        //     });
+        // }
         // then continue transaction
     };
 
@@ -98,7 +129,8 @@ class AddCard extends Component {
         return (
             <View
                 style={{
-                    flex: 1
+                    flex: 1,
+                    backgroundColor: "#f5f5f5",
                 }}
             >
                 <ProgressModal isVisible={this.state.isProgressModalVisible} text={this.state.modalText}/>
@@ -121,7 +153,7 @@ class AddCard extends Component {
                             icon="md-calculator"
                             backButtonAction={"Dashboard"}
                             navigation={this.props.navigation}
-                            headerText="Charge Card"
+                            headerText="Add Card"
                         />
 
                         <View style={[styles.textContainer, {marginTop: 16}]}>
@@ -134,13 +166,12 @@ class AddCard extends Component {
                                 Card Number *
                             </Text>
                             <TextInput
-                                keyboardType="phone-pad"
+                                keyboardType={"numeric"}
                                 maxLength={16}
                                 value={this.state.cardNumber}
                                 onChangeText={this.setDetails.bind(this, "cardNumber")}
                                 style={[styles.inputField]}
-                                editable={false}
-                                placeholder="4545 4545 4545 4545"
+                                placeholder="0000 0000 0000 0000"
                             />
                         </View>
 
@@ -150,10 +181,10 @@ class AddCard extends Component {
                             </Text>
                             <TextInput
                                 keyboardType="name-phone-pad"
-                                value={"John Doe"}
-                                editable={false}
+                                value={this.state.cardName}
                                 onChangeText={this.setDetails.bind(this, "cardName")}
                                 style={[styles.inputField]}
+                                placeholder={"e.g John Doe"}
                             />
                         </View>
 
@@ -166,9 +197,8 @@ class AddCard extends Component {
                                     <TextInput
                                         keyboardType="phone-pad"
                                         maxLength={2}
-                                        value={"12"}
-                                        editable={false}
-                                        onChangeText={this.setDetails.bind(this, "cardName")}
+                                        value={this.state.month}
+                                        onChangeText={this.setDetails.bind(this, "month")}
                                         style={[styles.inputField, {width: "100%"}]}
                                         placeholder="MM"
                                     />
@@ -176,9 +206,8 @@ class AddCard extends Component {
                                     <TextInput
                                         keyboardType="phone-pad"
                                         maxLength={2}
-                                        value={"21"}
-                                        editable={false}
-                                        onChangeText={this.setDetails.bind(this, "cardName")}
+                                        value={this.state.year}
+                                        onChangeText={this.setDetails.bind(this, "year")}
                                         style={[styles.inputField, {width: "100%"}]}
                                         placeholder="YY"
                                     />
@@ -191,59 +220,29 @@ class AddCard extends Component {
                                 </Text>
                                 <TextInput
                                     keyboardType="phone-pad"
-                                    // maxLength={11}
-                                    value={"454"}
-                                    editable={false}
-                                    onChangeText={this.setDetails.bind(this, "phone")}
+                                    maxLength={3}
+                                    value={this.state.cvv}
+                                    onChangeText={this.setDetails.bind(this, "cvv")}
                                     style={[styles.inputField, {width: "100%"}]}
                                     placeholder="CVV"
                                 />
                             </View>
                         </View>
 
-                        <View
-                            style={{
-                                width: "100%",
-                                flexDirection: "row",
-                                alignItems: "center",
-                            }}
-                        >
-                            <CheckBox
-                                containerStyle={{
-                                    backgroundColor: "transparent",
-                                    borderWidth: 0
-                                }}
-                                title="Add Card For Future Transactions"
-                                textStyle={{
-                                    fontWeight: "100"
-                                }}
-                                checkedColor={COLOR.AppBlueColor}
-                                onPress={() => {
-                                    this.setState({
-                                        saveCard: !this.state.saveCard
-                                    });
-                                }}
-                                checked={this.state.saveCard}
-                            />
-                        </View>
                         <TouchableOpacity
                             style={styles.buttonContainer}
-                            onPress={() => {
-                                this.setState({isProgressModalVisible: true});
-                                NativeModules.Checkout.show((msg)=>{
-                                    this.setState({isProgressModalVisible: false});
-                                    alert("Payment Successful");
-                                    navigation.replace("Dashboard");
-                                });
-                            }}
+                            onPress={
+                                this.registerCard //save a card
+                            }
                         >
-                            <Text style={styles.buttonText}> Continue</Text>
+                            <Text style={styles.buttonText}>Continue</Text>
                         </TouchableOpacity>
                     </View>
+                    <View style={styles.footer}>
+                        <Footer/>
+                    </View>
                 </ScrollView>
-                <View style={styles.footer}>
-                    <Footer/>
-                </View>
+
             </View>
         );
     }
@@ -252,16 +251,11 @@ class AddCard extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        height: height - 150,
         backgroundColor: "#f5f5f5",
         alignItems: "center"
     },
     footer: {
-        backgroundColor: "#fff",
-        position: "absolute",
-        top: height - 130,
-        right: 0,
-        left: 0
+        marginTop: 90,
     },
     inputField: {
         textAlign: "center",
@@ -300,5 +294,9 @@ const styles = StyleSheet.create({
         fontSize: 16
     }
 });
-
-export default AddCard;
+const mapState = (state) => {
+    return {
+        userEmail: state.auth.email
+    }
+};
+export default connect(mapState)(AddCard);

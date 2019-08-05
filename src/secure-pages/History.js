@@ -8,14 +8,20 @@ import {
     TouchableOpacity,
     Dimensions
 } from 'react-native';
+import {connect} from "react-redux";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Footer from './../components/common/footer'
 import Header from './../components/common/header';
 import TransactionCard from '../components/common/TransactionCard';
+import {addToTransactions, fetchTransaction} from "../components/Urls/Urls";
+import {ERROR_OCCURRED} from "../Errors";
+import ProgressModal from "../components/common/ProgressModal";
 
-const {width, height} = Dimensions.get("window");
 
 class Profile extends Component {
+
+
+
     static navigationOptions = ({navigation}) => ({
         headerTitle: <View style={{flex: 1, flexDirection: "row", justifyContent: "center"}}>
             <Image style={{width: 200}} resizeMode="contain" source={require('../assets/logo.png')}/></View>,
@@ -28,86 +34,59 @@ class Profile extends Component {
         ),
     });
 
+
+    state = {
+        isProgressModalVisible: false,
+        modalText: "",
+        transactions: []
+    };
+
+    fetchTransactionList = async () => {
+        this.setState({isProgressModalVisible: true, modalText: "Fetching your transactions..."});
+        try{
+            const response = await fetch(`${fetchTransaction}?name=Airtime&email=${this.props.userEmail}`);
+            const responseJson = await response.json();
+            this.setState({isProgressModalVisible: false});
+            if(!responseJson.bool){
+                alert(ERROR_OCCURRED);
+                return;
+            }
+            responseJson.data.map((value)=>{
+                this.setState({transactions: [...this.state.transactions, value]});
+            });
+        }
+        catch (e) {
+            this.setState({isProgressModalVisible: false});
+            alert(e.message);
+        }
+
+    };
+
+    componentDidMount() {
+        this.fetchTransactionList();
+    }
+
     render() {
 
-        const transactions = [
-            {
-                name: "John Doe",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$1000",
-                transaction_type: "Airtime"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            },
-            {
-                name: "Christiana Jon",
-                date: "01 Apr 2019 1:05pm",
-                amount: "$5000",
-                transaction_type: "Outgoing"
-            }
-        ]
+        const transactionList = this.state.transactions.map((trans, index) => {
 
-        const transactionList = transactions.map((trans, index) => (
-            <TransactionCard key={index} name={trans.name} subname={trans.date} amount={trans.amount}
-                             subamount={trans.transaction_type}/>
+            const date = new Date(parseInt(trans.time)/1000);
+            const day = date.getDay();
+            const month = date.getUTCMonth();
+            const year = date.getFullYear();
+            const hour = date.getHours();
+            const mins = date.getMinutes();
+            return <TransactionCard key={index} name={trans.phone} subname={`${day} ${month}, ${year} - ${hour}: ${mins}`} amount={trans.amount}
+                             subamount={trans.type}/>
 
-        ))
 
+    });
 
         return (
             <View style={{flex: 1}}>
+
+                <ProgressModal isVisible={this.state.isProgressModalVisible} text={this.state.modalText}/>
+
                 <ScrollView>
 
                     <View style={styles.container}>
@@ -146,5 +125,9 @@ const styles = StyleSheet.create({
     }
 });
 
-
-export default Profile;
+const mapState = (state) => {
+    return {
+        userEmail: state.auth.email,
+    }
+};
+export default connect(mapState)(Profile);

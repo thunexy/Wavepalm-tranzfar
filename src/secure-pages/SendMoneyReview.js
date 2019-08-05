@@ -16,9 +16,11 @@ import Footer from './../components/common/footer';
 import Header from './../components/common/header';
 import {COLOR} from "../Colors/Colors";
 import {CheckBox} from "react-native-elements";
+import {timeout} from "../components/common/Timeout";
 import {fetchSendRecipients} from "../components/Urls/Urls";
 import {fetchSavedRecipientsModalText} from "../components/Strings/Strings";
 import ProgressModal from "../components/common/ProgressModal";
+import {ERROR_OCCURRED} from "../Errors";
 
 const {width, height} = Dimensions.get("window");
 
@@ -28,11 +30,13 @@ class SendMoneyReview extends Component {
             headerTitle: <View style={{flex: 1, flexDirection: "row", justifyContent: "center"}}>
                 <Image style={{width: 200}} resizeMode="contain" source={require('../assets/logo.png')}/></View>,
             headerLeft: (
-                <TouchableOpacity onPress={() => navigation.openDrawer()}><Icon color="#000" name="md-menu" size={30}
-                                                                                style={{
-                                                                                    marginLeft: 24,
-                                                                                    marginRight: 24
-                                                                                }}/></TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                    <Icon color="#000" name="md-menu" size={30}
+                          style={{
+                              marginLeft: 24,
+                              marginRight: 24
+                          }}/>
+                </TouchableOpacity>
             ),
             headerRight: (
                 <View color="#000" name="md-menu" size={30} style={{marginLeft: 24, marginRight: 24}}/>
@@ -71,6 +75,7 @@ class SendMoneyReview extends Component {
         try {
             this.setState({modalText: fetchSavedRecipientsModalText, isProgressModalVisible: true});
             const response = await fetch(`${fetchSendRecipients}?type=${recipientCountryJson.type}&ownerEmail=${this.state.email}&country=${recipientCountryJson.name}`);
+
             const responseJson = await response.json();
             this.setState({isProgressModalVisible: false});
             if (!responseJson.bool) {
@@ -116,7 +121,7 @@ class SendMoneyReview extends Component {
                 <ScrollView>
                     <View style={styles.container}>
 
-                        <Header icon="md-calculator" backButtonAction={"SendMoneyEstimate"}
+                        <Header icon="ios-share-alt" backButtonAction={"SendMoneyEstimate"}
                                 navigation={this.props.navigation} replace={false} headerText="Send Money"
                                 riderText="Enter an amount in either field."/>
 
@@ -197,46 +202,54 @@ class SendMoneyReview extends Component {
                         </View>
 
 
+                        <View style={{
+                            width: "100%",
+                            paddingHorizontal: 16,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            height: 42,
+                            borderBottomWidth: 2,
+                            borderBottomColor: COLOR.InputGreyBorderColor
+                        }}>
+                            <Picker style={{color: "#000", width: "70%",}}
+                                    selectedValue={`${this.state.selectedRecipient.name}`}
+                                    onValueChange={this.setRecipient}>
 
-                            <View style={{
-                                width: "100%",
-                                paddingHorizontal: 16,
-                                flexDirection: "row",
-                                alignItems: "center",
-                                height: 42,
-                                borderBottomWidth: 2,
-                                borderBottomColor: COLOR.InputGreyBorderColor
-                            }}>
-                                <Picker style={{color: "#000", width: "70%",}}
-                                        selectedValue={`${this.state.selectedRecipient.name}`}
-                                        onValueChange={this.setRecipient}>
+                                {recipientsDropdown}
 
-                                    {recipientsDropdown}
-
-                                </Picker>
-                                <Text
-                                    onPress={() => this.props.navigation.replace((navigation.getParam("state").selectedCountry.type === "w" && "AddSendMoneyEuropeRecipient") || "AddSendMoneyAfricaRecipient", {
-                                        state: this.props.navigation.getParam("state"),
-                                        baseCurrency: this.props.navigation.getParam("baseCurrency")
-                                    })}
-                                    style={{
-                                        width: "30%",
-                                        textAlign: "center",
-                                        color: COLOR.AppBlueColor,
-                                        fontSize: 15
-                                    }}>Add
-                                    New</Text>
-                            </View>
+                            </Picker>
+                            <Text
+                                onPress={() => this.props.navigation.replace((navigation.getParam("state").selectedCountry.type === "w" && "AddSendMoneyEuropeRecipient") || "AddSendMoneyAfricaRecipient", {
+                                    state: this.props.navigation.getParam("state"),
+                                    baseCurrency: this.props.navigation.getParam("baseCurrency")
+                                })}
+                                style={{
+                                    width: "30%",
+                                    textAlign: "center",
+                                    color: COLOR.AppBlueColor,
+                                    fontSize: 15
+                                }}>Add
+                                New</Text>
+                        </View>
 
 
-                        <TouchableOpacity style={styles.buttonContainer}
-                                          onPress={() => {
-                                              if (!this.state.selectedRecipient.recipient_email) {
-                                                  alert("No recipient selected!");
-                                                  return;
-                                              }
-                                              navigation.navigate("AddCard");
-                                          }}>
+                        <TouchableOpacity style={styles.buttonContainer} onPress={() => {
+                            if (!this.state.selectedRecipient.recipient_email) {
+                                alert("No recipient selected!");
+                                return;
+                            }
+
+                            let paymentInfo = {
+                                amount: navigation.state.params.totalAmount,
+                                transactionType: "SEND MONEY",
+                                prevPage: "SendMoneyEstimate",
+                                recipient: this.state.selectedRecipient.name + "(" + ((this.state.selectedRecipient.bank + " - ") || "") + this.state.selectedRecipient.country + ")",
+
+                        };
+                            navigation.navigate("CardList", {
+                                details: paymentInfo
+                            });
+                        }}>
                             <Text style={styles.buttonText}>Pay Via Card</Text>
                         </TouchableOpacity>
 
