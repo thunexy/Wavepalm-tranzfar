@@ -8,6 +8,7 @@ export const recoveryUrl = `${rootUrl}/send-recovery-email.php`;
 export const saveRecipientUrl = `${rootUrl}/save-recipient.php`;
 export const passwordChangeUrl = `${rootUrl}/change-password.php`;
 export const fetchBankList = `${rootUrl}/flutterwave/get-bank-list.php`;
+export const fetchAccountName = `${rootUrl}/flutterwave/fetch-account-name.php`;
 export const fetchCardLists = `${rootUrl}/fetch-card-list.php`;
 export const addToTransactions = `${rootUrl}/add-to-transaction.php`;
 export const fetchTransaction = `${rootUrl}/fetch-transactions.php`;

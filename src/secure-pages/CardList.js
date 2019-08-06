@@ -139,6 +139,7 @@ class CardList extends Component {
                     response = await fetch(`${addToTransactions}?name=Airtime&email=${userEmail}&recipient=${phoneNumber}&phone=${phoneNumber}&amount=${airtimeAmount}&type=${transactionType}`);
                     break;
                 case "SEND MONEY":
+                    console.log(`${addToTransactions + recipient + amount }`);
                     response = await fetch(`${addToTransactions}?name=Outgoing&email=${userEmail}&recipient=${recipient}&phone=${recipient}&amount=${amount}&type=${transactionType}`);
                     break;
                 case "RECEIVE MONEY":

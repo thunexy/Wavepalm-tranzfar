@@ -20,6 +20,7 @@ import {addingCard, processingPayment, validatingCard} from "../components/Strin
 import ProgressModal from "../components/common/ProgressModal";
 import {addCard} from "../components/Urls/Urls";
 import {validateCard} from "../components/checkout/ValidateCard";
+import {CARD_NOT_VALIDATED} from "../Errors";
 
 const {width, height} = Dimensions.get("window");
 
@@ -248,10 +249,16 @@ class ChargeCard extends Component {
                             style={styles.buttonContainer}
                             onPress={() => {
                                 this.setState({isProgressModalVisible: true});
-                                NativeModules.Checkout.show((msg)=>{
-                                    this.setState({isProgressModalVisible: false});
-                                    alert("Payment Successful");
-                                    navigation.replace("Dashboard");
+                                const {cardNumber, cardName, month, year, cvv} = this.state;
+                                validateCard(cardNumber, cardName, month, year, cvv, (status) => {
+
+                                    if (!status) {
+                                        this.setState({isProgressModalVisible: false});
+                                        alert(CARD_NOT_VALIDATED);
+                                        return;
+                                    }
+                                    const {transactionType} = this.props.navigation.state.params.details;
+                                    this.completePayment(transactionType);
                                 });
                             }}
                         >

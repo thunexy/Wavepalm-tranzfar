@@ -87,7 +87,7 @@ class AddSendMoneyAfricaRecipient extends Component {
 
     reformatBanks = (banksArray) => {
         const bankArray = banksArray.map((bank, i) => {
-            return {label: bank.Name, value: bank.Id};
+            return {label: bank.Name, value: bank.Code};
         });
         return bankArray;
     };
@@ -118,7 +118,28 @@ class AddSendMoneyAfricaRecipient extends Component {
 
     };
 
+    fetchAccountName = async (accountNumber, bankCode) => {
+        try {
+            this.setState({modalText: "Verifying account number...", isProgressModalVisible: true});
+            //timeout.start("Network error! Please, try again", timeout.slow);
+            const response = await fetch(`${fetchAccountName}?accountNumber=${accountNumber}&bankCode=${bankCode}`);
+            const responseJson = await response.json();
+            this.setState({isProgressModalVisible: false});
+            alert(responseJson.message);
+            if (!responseJson.bool) {
+                alert("Could not verify the account number");
+                return;
+            }
+            this.setState({fullName: responseJson.data.Banks.Name});
+        }
+        catch (error) {
+            this.setState({isProgressModalVisible: false});
+            alert(error.message);
+        }
+    };
+
     textChange = (key, value) => {
+
         this.setState({[key]: value});
     };
 
@@ -126,11 +147,11 @@ class AddSendMoneyAfricaRecipient extends Component {
         this.setState({selectedBank: this.state.banks[i], isBankSelected: !(1 === 0)});
     };
 
-    componentWillMount(){
+    componentWillMount() {
         this.fetchBanks();
     }
 
-    render(){
+    render() {
         return (
             <View style={{flex: 1}}>
                 <ScrollView>
@@ -139,16 +160,6 @@ class AddSendMoneyAfricaRecipient extends Component {
                         <Header icon="md-contact" backButtonAction={"SendMoneyEstimate"}
                                 navigation={this.props.navigation} replace={false} headerText="Add Recipient"/>
                         <View style={{width: "100%"}}>
-
-                            {/*<Dropdown*/}
-                            {/*line*/}
-                            {/*width="100%"*/}
-                            {/*selectedValue={this.state.country}*/}
-                            {/*onValueChange={(itemValue, itemIndex) =>*/}
-                            {/*this.setState({country: itemValue})*/}
-                            {/*}*/}
-                            {/*items={europeanCountries}*/}
-                            {/*/>*/}
 
 
                             <TextInput
@@ -159,14 +170,6 @@ class AddSendMoneyAfricaRecipient extends Component {
                                 style={[styles.inputField, {color: "#000"}]}
                             />
 
-                            <TextInput
-                                id="accountNumber"
-                                placeholder="Account Number"
-                                value={this.state.accountNumber}
-                                keyboardType={"numeric"}
-                                onChangeText={this.textChange.bind(this, "accountNumber")}
-                                style={styles.inputField}
-                            />
 
                             <View style={{
                                 width: "100%",
@@ -181,12 +184,29 @@ class AddSendMoneyAfricaRecipient extends Component {
                                     {this.state.banksDropdown}
                                 </Picker>
                             </View>
+
+
                             <TextInput
-                                id="fullName"
-                                placeholder="Full Name *"
-                                value={this.state.fullName}
-                                onChangeText={this.textChange.bind(this, "fullName")}
+                                id="accountNumber"
+                                placeholder="Account Number"
+                                value={this.state.accountNumber}
+                                keyboardType={"numeric"}
+                                onChangeText={this.textChange.bind(this, "accountNumber")}
                                 style={styles.inputField}
+                            />
+
+
+                            <TextInput onPress={() => {
+                                if (this.state.isBankSelected) {
+                                    this.fetchAccountName(this.state.accountNumber, this.state.selectedBank.value);
+                                }
+                            }}
+                                       id="fullName"
+                                       placeholder="Full Name *"
+                                       editable={false}
+                                       value={this.state.fullName}
+                                       onChangeText={this.textChange.bind(this, "fullName")}
+                                       style={styles.inputField}
                             />
                             <TextInput
                                 id="email"

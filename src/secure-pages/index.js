@@ -15,7 +15,6 @@ export Buyairtime from "./Buyairtime";
 export AirtimePayment from "./AirtimePayment";
 export AddSendMoneyAfricaRecipient from "./AddSendMoneyAfricaRecipient";
 export AddSendMoneyEuropeRecipient from "./AddSendMoneyEuropeRecipient";
-export AddReceiveMoneyRecipient from "./AddReceiveMoneyRecipient";
 export SendMoneyBeneficiaries from "./SendMoneyBeneficiaries";
 export SendPayment from "./SendPayment";
 export EnrollPasscode from "./EnrollPasscode";

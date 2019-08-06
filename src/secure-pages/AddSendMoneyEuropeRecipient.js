@@ -42,7 +42,7 @@ class AddSendMoneyEuropeRecipient extends Component {
 
     };
     state = {
-        country: this.props.navigation.getParam("state").selectedCountry,
+        country: this.props.navigation.getParam("state").selectedCountry || this.props.navigation.state.params.state.selectedReceiveCountry,
         accountNumber: "",
         bank: "",
         fullName: "",
@@ -63,7 +63,7 @@ class AddSendMoneyEuropeRecipient extends Component {
                 if (!responseJson.bool) {
                     return;
                 }
-                this.props.navigation.navigate("SendMoneyEstimate");
+                this.props.navigation.navigate(this.props.navigation.state.params.prevPage);
             }
             catch (error) {
                 this.setState({isProgressModalVisible: false});
@@ -84,7 +84,7 @@ class AddSendMoneyEuropeRecipient extends Component {
 
 
     render() {
-
+        {console.log(this.props.navigation.state.params.state)}
         return (
             <View style={{flex: 1}}>
                 <ScrollView>
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
     return {
-        email: state.auth.email
+        email: state.auth.email,
     }
 };
 

@@ -70,13 +70,8 @@ class Profile extends Component {
 
         const transactionList = this.state.transactions.map((trans, index) => {
 
-            const date = new Date(parseInt(trans.time)/1000);
-            const day = date.getDay();
-            const month = date.getUTCMonth();
-            const year = date.getFullYear();
-            const hour = date.getHours();
-            const mins = date.getMinutes();
-            return <TransactionCard key={index} name={trans.phone} subname={`${day} ${month}, ${year} - ${hour}: ${mins}`} amount={trans.amount}
+            const date = new Date(parseInt(trans.time * 1000));
+            return <TransactionCard key={index} name={trans.phone} subname={`${new Date(date).toUTCString()}`} amount={trans.amount}
                              subamount={trans.type}/>
 
 

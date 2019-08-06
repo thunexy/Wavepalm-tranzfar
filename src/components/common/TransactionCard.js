@@ -9,10 +9,10 @@ const TransactionCard = (props) => {
                 <Text style={styles.name}>{props.name}</Text>
                 <Text style={[{marginTop: 7}, props.deleteIcon && {marginTop: 15}]}>{props.subname}</Text>
             </View>
-            <View>
+            <View style={{alignItems: "flex-end"}}>
                 {props.deleteIcon &&  (<Icon color="#000" name="delete" size={30} style={{alignSelf: "center"}} />)  }
                 {props.amount && (   <Text style={styles.amount}>{props.amount}</Text>   )}
-                {props.subamount && (   <Text style={[{marginTop: 7}, props.deleteIcon && {marginTop: 0} ]}>{props.subamount}</Text>)}
+                {props.subamount && (   <Text style={[{marginTop: 7, fontSize: 12}, props.deleteIcon && {marginTop: 0} ]}>{props.subamount}</Text>)}
             </View>
         </View>
     )

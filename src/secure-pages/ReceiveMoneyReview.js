@@ -11,6 +11,7 @@ import {
     DatePickerAndroid,
     Dimensions,
 } from 'react-native';
+import {connect} from "react-redux";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Footer from './../components/common/footer';
 import Header from './../components/common/header';
@@ -216,7 +217,7 @@ class ReceiveMoneyReview extends Component {
                                 borderBottomWidth: 2,
                                 borderBottomColor: COLOR.InputGreyBorderColor
                             }}>
-                                <Picker style={{color: "#000", width: "70%",}}
+                                <Picker style={{color: "#000", width: "70%"}}
                                         selectedValue={`${this.state.selectedRecipient.name}`}
                                         onValueChange={this.setRecipient}>
 
@@ -224,9 +225,9 @@ class ReceiveMoneyReview extends Component {
 
                                 </Picker>
                                 <Text
-                                    onPress={() => this.props.navigation.replace((navigation.getParam("state").selectedCountry.type === "w" && "AddSendMoneyEuropeRecipient") || "AddSendMoneyAfricaRecipient", {
+                                    onPress={() => this.props.navigation.replace("AddSendMoneyEuropeRecipient", {
                                         state: this.props.navigation.getParam("state"),
-                                        baseCurrency: this.props.navigation.getParam("baseCurrency")
+                                        prevPage: "ReceiveMoneyReview",
                                     })}
                                     style={{
                                         width: "30%",
@@ -241,10 +242,12 @@ class ReceiveMoneyReview extends Component {
 
                         <TouchableOpacity style={styles.buttonContainer}
                                           onPress={() => {
+                                              console.log(this.state.selectedRecipient);
                                               let paymentInfo = {
-                                                  amount: navigation.state.params.totalAmount,
-                                                  transactionType: "RECEIVE_MONEY",
+                                                  amount: navigation.state.params.state.totalAmount,
+                                                  transactionType: "RECEIVE MONEY",
                                                   prevPage: "ReceiveMoneyEstimate",
+                                                  recipient: (this.state.selectedRecipient.name || this.props.others.name) + " ( " +  (this.state.selectedRecipient.country || this.props.others.country) + " )",
                                               };
                                               navigation.navigate("CardList", {
                                                   details: paymentInfo
@@ -372,5 +375,10 @@ const styles = StyleSheet.create({
 
 });
 
+const mapState = state => {
+    return {
+        others: state.auth.others,
+    }
+};
 
-export default ReceiveMoneyReview;
+export default connect(mapState)(ReceiveMoneyReview);

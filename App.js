@@ -86,7 +86,7 @@ const DrawerStackUser = createDrawerNavigator(
             screen: createStackNavigator({
                 ReceiveMoneyEstimate: ReceiveMoneyEstimate,
                 ReceiveMoneyReview,
-                AddCard, Dashboard, CardList, History
+                AddCard, Dashboard, CardList, History, AddSendMoneyEuropeRecipient
             })
         },
         LogOut: Home

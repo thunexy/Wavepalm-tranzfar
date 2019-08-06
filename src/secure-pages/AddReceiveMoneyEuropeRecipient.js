@@ -18,7 +18,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 const {width, height} = Dimensions.get("window");
 
-class AddReceiveMoneyRecipient extends Component {
+class AddReceiveMoneyEuropeRecipient extends Component {
     static navigationOptions = ({navigation}) => {
         return {
             headerTitle: <View style={{flex: 1, flexDirection: "row", justifyContent: "center"}}>
@@ -179,4 +179,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default AddReceiveMoneyRecipient;
+export default AddReceiveMoneyEuropeRecipient;

@@ -221,7 +221,8 @@ class SendMoneyReview extends Component {
                             <Text
                                 onPress={() => this.props.navigation.replace((navigation.getParam("state").selectedCountry.type === "w" && "AddSendMoneyEuropeRecipient") || "AddSendMoneyAfricaRecipient", {
                                     state: this.props.navigation.getParam("state"),
-                                    baseCurrency: this.props.navigation.getParam("baseCurrency")
+                                    baseCurrency: this.props.navigation.getParam("baseCurrency"),
+                                    prevPage: "SendMoneyReview",
                                 })}
                                 style={{
                                     width: "30%",
@@ -240,12 +241,12 @@ class SendMoneyReview extends Component {
                             }
 
                             let paymentInfo = {
-                                amount: navigation.state.params.totalAmount,
+                                amount: navigation.state.params.state.totalAmount,
                                 transactionType: "SEND MONEY",
                                 prevPage: "SendMoneyEstimate",
-                                recipient: this.state.selectedRecipient.name + "(" + ((this.state.selectedRecipient.bank + " - ") || "") + this.state.selectedRecipient.country + ")",
+                                recipient: this.state.selectedRecipient.name + " ( " + this.state.selectedRecipient.country + " )",
 
-                        };
+                            };
                             navigation.navigate("CardList", {
                                 details: paymentInfo
                             });
