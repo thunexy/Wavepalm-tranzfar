@@ -30,7 +30,13 @@ import {
     AddSendMoneyEuropeRecipient,
     AddReceiveMoneyRecipient,
     CardList,
-    AddCard
+    AddCard,
+    RealEstate,
+    FinancialInvestment,
+    Ajoo,
+    AjooGroup,
+    AjooMembers,
+    JoinGroupAjoo
 } from "./src/secure-pages";
 import SendMoneyReview from "./src/secure-pages/SendMoneyReview";
 import ReceiveMoneyReview from "./src/secure-pages/ReceiveMoneyReview";
@@ -68,6 +74,9 @@ const DrawerStackUser = createDrawerNavigator(
     {
         Dashboard: {screen: createStackNavigator({Dashboard})},
         Profile: {screen: createStackNavigator({Profile})},
+        FinancialInvestment: {screen: createStackNavigator({FinancialInvestment})},
+        Ajoo: {screen: createStackNavigator({Ajoo, AjooGroup,JoinGroupAjoo, AjooMembers })},
+        RealEstate: {screen: createStackNavigator({RealEstate})},
         History: {screen: createStackNavigator({History})},
         Buyairtime: {screen: createStackNavigator({Buyairtime, AirtimePayment, CardList})},
         CardList: {screen: createStackNavigator({CardList, AddCard})},

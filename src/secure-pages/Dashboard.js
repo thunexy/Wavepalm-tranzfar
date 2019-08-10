@@ -165,27 +165,21 @@ class Dashboard extends Component {
                                                 title="Nigerian Financial Instruments"
                                                 desc="Buy and sell treasury bills."
                                                 child={true}
-                                                onPress={() => {
-                                                alert("Work in Progress")
-                                                }}
+                                                onPress={() => this.props.navigation.navigate("FinancialInvestment") }
                                                 icon={"cash"}
                                             />
                                             <DashboardItems
                                                 title="Nigerian Real Estate"
                                                 desc={"Invest in Nigerian Real Estate"}
                                                 child={true}
-                                                onPress={() => {
-                                                alert("Work in Progress")
-                                                }}
+                                                onPress={() => this.props.navigation.navigate("RealEstate") }
                                                 icon={"business"}
                                             />
                                             <DashboardItems
                                                 title="Ajooo"
                                                 desc={"Invest in Ajooo"}
                                                 child={true}
-                                                onPress={() => {
-                                                alert("Work in Progress")
-                                                }}
+                                                onPress={() => this.props.navigation.navigate("Ajoo") }
                                                 icon={"briefcase"}
                                             />
                                         </View>
