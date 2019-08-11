@@ -1,5 +1,6 @@
-import AddSendMoneyAfricaRecipient from "./AddSendMoneyAfricaRecipient";
-
+export AjooGroup from "./AjooGroup";
+export AjooMembers from "./AjooMembers";
+export JoinGroupAjoo from "./JoinGroupAjoo";
 export AddCard from "./AddCard";
 export CardList from "./CardList";
 
@@ -18,3 +19,6 @@ export SendMoneyBeneficiaries from "./SendMoneyBeneficiaries";
 export SendPayment from "./SendPayment";
 export EnrollPasscode from "./EnrollPasscode";
 export SendMoneyReview from "./SendMoneyReview";
+export Ajoo from "./Ajoo";
+export RealEstate from "./RealEstate";
+export FinancialInvestment from "./FinancialInvestment";
